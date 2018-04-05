@@ -25,7 +25,7 @@ $('#message-form').on('submit',function(e){
   });
 });
 
-socket.on('newlocationMessage',function(message){
+socket.on('newLocationMessage',function(message){
   var li = $('<li></li>');
   var a = $('<a target="_blank">My current location</a>');
   li.text(`${message.from}:`);
@@ -38,7 +38,7 @@ socket.on('newlocationMessage',function(message){
 
 var locationButton = $('#send-location');
 locationButton.on('click',function(){
-  if(navigator.geolocation){
+  if(!navigator.geolocation){
     return alert('Geolocaiton not supported by your browser');
   }
 
