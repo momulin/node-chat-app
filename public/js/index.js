@@ -13,15 +13,19 @@ socket.on('newMessage',(message)=>{
   var li = $('<li></li>');
   li.text(`${message.from}: ${message.text}`);
 
-  $('#message').append(li);
+  $('#messages').append(li);
 });
 
 $('#message-form').on('submit',function(e){
   e.preventDefault();
 
+  var messageTextbox = $('[name=message]');
+
   socket.emit('createMessage',{
     from:'momu',
     text:$('[name=message]').val()
+  },function(){
+    messageTextbox.val('')
   });
 });
 
@@ -31,7 +35,7 @@ socket.on('newLocationMessage',function(message){
   li.text(`${message.from}:`);
   a.attr('href',message.url);
   li.append(a);
-  $("#message").append(li);
+  $("#messages").append(li);
 
 });
 
@@ -42,12 +46,16 @@ locationButton.on('click',function(){
     return alert('Geolocaiton not supported by your browser');
   }
 
+  locationButton.attr('disabled','disabled').text('Sending location...');
+
   navigator.geolocation.getCurrentPosition(function(position){
+    locationButton.removeAttr('disabled').text('Send location');
     socket.emit('createLocationMessage',{
       latitude:position.coords.latitude,
       longitude:position.coords.longitude
     });
   },function(){
+    locationButton.removeAttr('disabled').text('Send location');
     alert('Unable to fetch location');
   });
 });
