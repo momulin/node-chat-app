@@ -1,5 +1,10 @@
 var socket = io();
 
+function scrollToBottom(){
+  console.log($('#messages'));
+  $('#messages').scrollTop($('#messages')[0].scrollHeight);
+};
+
 socket.on('connect',function(){
   console.log('Connected to server');
 });
@@ -18,6 +23,7 @@ socket.on('newMessage',(message)=>{
   });
 
   $('#messages').append(html);
+  scrollToBottom();
 });
 
 socket.on('newLocationMessage',function(message){
@@ -29,6 +35,7 @@ socket.on('newLocationMessage',function(message){
     createAt:formattedTime
   });
   $('#messages').append(html);
+  scrollToBottom();
 });
 
 $('#message-form').on('submit',function(e){
