@@ -3,8 +3,8 @@ const http = require('http');
 const express = require('express');
 const socketIO = require('socket.io');
 
-const {generateMessage,generateLocationMessage} = require('./utils/message')
-const {isRealString} = require('./utils/validation')
+const {generateMessage,generateLocationMessage} = require('./utils/message');
+const {isRealString} = require('./utils/validation');
 const publicpath = path.join(__dirname,'../public');
 const {Users} = require('./utils/users');
 
@@ -51,12 +51,24 @@ io.on('connection',(socket)=>{
       if(user){
         io.to(params.room).emit('newLocationMessage',generateLocationMessage(user.name,coords.latitude,coords.longitude));
       }
+
     });
 
   });
 
 
-
+  socket.on('getRoomList',(callback)=>{
+      var availableRooms = [];
+      var rooms = io.sockets.adapter.rooms;
+      if (rooms) {
+          for (var room in rooms) {
+              if (!rooms[room].sockets.hasOwnProperty(room)) {
+                  availableRooms.push(room);
+              }
+          }
+      }
+      return callback(availableRooms);
+  });
 
 
   socket.on('disconnect',()=>{
@@ -67,6 +79,7 @@ io.on('connection',(socket)=>{
     }
   });
 });
+
 
 
 
